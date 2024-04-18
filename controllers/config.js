@@ -1,3 +1,6 @@
+// const { initializeApp, applicationDefault, cert } = require('firebase-admin/app');
+// const { getFirestore, Timestamp, FieldValue, Filter } = require('firebase-admin/firestore');
+
 const firebase = require("firebase");
 const firebaseConfig = {
   apiKey: "AIzaSyDAc-G3iWdE7IQoaQSEGO2GAN_Chr_syZg",
@@ -10,7 +13,7 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-const NotificationDaoTaoVKU = db.collection("NotificationDaoTaoVKU");
+const database = firebase.firestore();
+// const database = firebase.getFirestore();
 
-module.exports = NotificationDaoTaoVKU;
+module.exports = database;
