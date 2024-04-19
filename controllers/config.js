@@ -1,9 +1,7 @@
-// const { initializeApp, applicationDefault, cert } = require('firebase-admin/app');
-// const { getFirestore, Timestamp, FieldValue, Filter } = require('firebase-admin/firestore');
+require("dotenv").config()
 
-const firebase = require("firebase");
 const firebaseConfig = {
-  apiKey: "AIzaSyDAc-G3iWdE7IQoaQSEGO2GAN_Chr_syZg",
+  apiKey: process.env.FIREBASE_API_KEY,
   authDomain: "vku-app-cecd3.firebaseapp.com",
   projectId: "vku-app-cecd3",
   storageBucket: "vku-app-cecd3.appspot.com",
@@ -12,8 +10,13 @@ const firebaseConfig = {
   measurementId: "G-J44PZWLS9G",
 };
 
+const firebase = require("firebase");
 firebase.initializeApp(firebaseConfig);
 const database = firebase.firestore();
-// const database = firebase.getFirestore();
+
+// const { initializeApp, applicationDefault, cert } = require('firebase-admin/app');
+// const { getFirestore, Timestamp, FieldValue, Filter } = require('firebase-admin/firestore');
+// initializeApp(firebaseConfig)
+// const database = getFirestore();
 
 module.exports = database;
