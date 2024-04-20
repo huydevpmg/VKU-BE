@@ -1,28 +1,44 @@
 const axios = require("axios");
 const cheerio = require("cheerio");
 const fs = require("fs")
-
 const database = require("./config");
 
 const baseURL = "https://daotao.vku.udn.vn"
-const websiteURLs = [
-  baseURL + "/vku-thong-bao-chung",
-  baseURL + "/vku-thong-bao-khtc",
-  baseURL + "/vku-thong-bao-ktdbcl",
-  baseURL + "/vku-thong-bao-ctsv",
-];
+const commonPageSlug = "/vku-thong-bao-"
+const collectionSuffixes = ["chung", "khtc", "ktdbcl", "ctsv"];
 
 const logFileURL = "./debug.log"
 fs.writeFileSync(logFileURL, "")
 
-// Mảng chứa các đuôi của URL tương ứng với tên collection
-const collectionSuffixes = ["phongdaotao", "khtc", "ktdbcl", "ctsv"];
+// const collectionSuffixes = ["phongdaotao", "khtc", "ktdbcl", "ctsv"];
 
 const urlToId = (url) => url.match(/thong-bao-(\d+)\.html/)[1]
 const idToUrl = (id) => `/thong-bao/thong-bao-${id}.html`
+const urlToCollection = (url) => {
+  const parts = url.split('-')
+  return `notification-${parts[parts.length-1]}`
+}
 
-async function fetchBlogListAndSaveToFirebase(url, collectionName) {
+const collectionData = {}
+
+// Main Task:
+const fetchAllList = async () => {
+  for (let suffix of collectionSuffixes) {
+    const url = baseURL + commonPageSlug + suffix;
+    const collectionName = `notification-${suffix}`
+    await fetchBlogList(url, collectionName);
+    console.log("Done Fetch for ", collectionName)
+  }
+}
+const dumpToLocal = () => {
+  for (let table in collectionData.keys()) {
+    fs.writeFileSync(`${table}.json`, JSON.stringify(collectionData[data][table]))
+  }
+}
+
+async function fetchBlogList(url, collectionName = '') {
   try {
+    if (collectionName === '') collectionName = urlToCollection(url)
     const { data } = await axios.get(url);
     const $ = cheerio.load(data);
     const annoucementList = [];
@@ -42,20 +58,26 @@ async function fetchBlogListAndSaveToFirebase(url, collectionName) {
       annoucementList.push({id, data})
     });
     // Lưu dữ liệu vào collection tương ứng trong Firestore 
+    console.log(annoucementList.length)
     console.log(`Data crawled and saved for ${url}. Fetching for each individual blog!`);
     
     for (let entry of annoucementList) {
       const {id,data} = entry
       await addDataToFirebase(collectionName, id, data);
-      await fetchSingleBlogThenSave(id)
+      await fetchSingleBlog(id)
     }
   } catch (error) {
     console.error(`Error fetching list for ${url}:`, error);
   }
 }
 
-async function fetchSingleBlogThenSave(id) {
+async function fetchSingleBlog(id) {
   try {
+    if (await checkDataExist('blogs', id)) {
+      fs.appendFileSync(logFileURL,
+        `Report: Blog ${id} already exists in blogs\n`)
+      return false;
+    }
     const { data } = await axios.get(baseURL + idToUrl(id));
     const $ = cheerio.load(data);
     const $content = $("#content-wrapper")
@@ -91,61 +113,61 @@ async function deleteQueryBatch(db, query, resolve) {
 
   const batchSize = snapshot.size;
   if (batchSize === 0) {
-    // When there are no documents left, we are done
     resolve();
     return;
   }
 
-  // Delete documents in a batch
   const batch = db.batch();
   snapshot.docs.forEach((doc) => {
     batch.delete(doc.ref);
   });
   await batch.commit();
 
-  // Recurse on the next process tick, to avoid
-  // exploding the stack.
   process.nextTick(() => {
     deleteQueryBatch(db, query, resolve);
   });
 }
 
-async function addDataToFirebase(collectionName, key, value) {
+async function checkDataExist(collectionName, key) {
+  key = key.toString()
+  const docRef = database.collection(collectionName).doc(key)
+  const doc = await docRef.get()
+  if (doc.exists) {
+    collectionData[collectionName][key] = doc.data()
+    return true
+  }
+  return false
+}
+
+async function addDataToFirebase(collectionName, key, value, forceUpdate = false) {
   try {
-    const collection = database.collection(collectionName);
     key = key.toString()
-    // await collection.add(value)
-    // collection.doc('id').set({text: 'haha'})
-    await collection.doc(key).set(value);
-    // console.log(
-    //   `Data added to collection ${collectionName}:`,
-    //   item
-    // );
+    const isExist = await checkDataExist(collectionName, key)
+    if (isExist && !forceUpdate) {
+      fs.appendFileSync(logFileURL,
+        `Report: Entry ${key} already exists in ${collectionName}\n`)
+        return false;
+    }
+    const docRef = database.collection(collectionName).doc(key);
+    await docRef.set(value);
+    collectionData[collectionName][key] = value
     fs.appendFileSync(logFileURL,
-      `Data added to collection ${collectionName}/${key}:` + JSON.stringify(value) + '\n'
+      `Report: Data added to collection ${collectionName}/${key}:` + JSON.stringify(value) + '\n'
     );
   } catch (error) {
     console.error(
       `Error ${error.name} while adding data to collection ${collectionName} cause ${error.cause}`
     );
     fs.appendFileSync(logFileURL,
-      `Error ${error.name}. Cause ${error.cause}. Details: ` + JSON.stringify(error) + '\n'
+      `ERROR ${error.name}. Cause ${error.cause}. Details: ` + JSON.stringify(error) + '\n'
     );
   }
 }
 
-// Lặp qua mỗi URL và cào dữ liệu
-let blogsDeleted = false
-websiteURLs.forEach(async (url, index) => {
-  if (!blogsDeleted) {
-    await deleteCollection(`blogs`)
-    blogsDeleted = true
-  }
-  const collectionSuffix = collectionSuffixes[index];
-  const collectionName = `notification-${collectionSuffix}`
-  await deleteCollection(collectionName)
-  await fetchBlogListAndSaveToFirebase(url, collectionName);
-  console.log("Done for ", collectionName)
-});
+async function resetDatabase() {
+  await deleteCollection(`blogs`)
+  for (let suffix in collectionSuffixes)
+    await deleteCollection(`notification-${suffix}`)
+}
 
-module.exports = { fetchBlogListAndSaveToFirebase };
+module.exports = { fetchAllList, fetchBlogList, fetchSingleBlog, resetDatabase};
