@@ -19,21 +19,41 @@ const urlToCollection = (url) => {
   return `notification-${parts[parts.length-1]}`
 }
 
+const gotAllData = false
 const collectionData = {}
 
 // Main Task:
-const fetchAllList = async () => {
-  for (let suffix of collectionSuffixes) {
-    const url = baseURL + commonPageSlug + suffix;
-    const collectionName = `notification-${suffix}`
-    await fetchBlogList(url, collectionName);
-    console.log("Done Fetch for ", collectionName)
+const fetchAllList = async (req, res) => {
+  try {
+    if (!gotAllData) {
+      for (let suffix of collectionSuffixes) {
+        const url = baseURL + commonPageSlug + suffix;
+        const collectionName = `notification-${suffix}`
+        await fetchBlogList(url, collectionName);
+        console.log("Done Fetch for ", collectionName)
+      }
+      dumpToLocal()
+      gotAllData = true
+    }
+    res.json(collectionData)
+  } catch (error) {
+    res.status(500).json(error)
   }
 }
 const dumpToLocal = () => {
   for (let table in collectionData.keys()) {
     fs.writeFileSync(`${table}.json`, JSON.stringify(collectionData[data][table]))
   }
+}
+const fetchSingleBlog = async(req, res) => {
+  try {
+    fetchAllList()
+    const id = req.params["id"];
+    const data = await fetchSingleBlogId(id)
+    res.json(data)
+  } catch (error) {
+    res.status(500).json(error)
+  } 
 }
 
 async function fetchBlogList(url, collectionName = '') {
@@ -61,22 +81,24 @@ async function fetchBlogList(url, collectionName = '') {
     console.log(annoucementList.length)
     console.log(`Data crawled and saved for ${url}. Fetching for each individual blog!`);
     
-    for (let entry of annoucementList) {
+    // Fetch blogs silmutaneously!
+    const promises = Array.from(annoucementList, async (entry) => {
       const {id,data} = entry
       await addDataToFirebase(collectionName, id, data);
-      await fetchSingleBlog(id)
-    }
+      await fetchSingleBlogId(id)
+    })
+    const results = await Promise.all(promises)
   } catch (error) {
     console.error(`Error fetching list for ${url}:`, error);
   }
 }
 
-async function fetchSingleBlog(id) {
+async function fetchSingleBlogId(id) {
   try {
     if (await checkDataExist('blogs', id)) {
       fs.appendFileSync(logFileURL,
         `Report: Blog ${id} already exists in blogs\n`)
-      return false;
+      return collectionData['blogs'][id];
     }
     const { data } = await axios.get(baseURL + idToUrl(id));
     const $ = cheerio.load(data);
@@ -86,6 +108,7 @@ async function fetchSingleBlog(id) {
     const body = $content.find(`#content-body article div[property="content:encoded"]`).html()
     const blog = { title, metadata, body }
     await addDataToFirebase(`blogs`, id, blog)
+    return blog
   } catch (error) {
     console.error(`Error fetching blog for ${id}:`, error)
   }
@@ -95,7 +118,7 @@ async function deleteCollection(collectionName, batchSize = 10) {
   try {
     const collectionRef = database.collection(collectionName);
     const query = collectionRef.orderBy('__name__').limit(batchSize);
-    
+    console.log(`Deleting ${collectionName}`)
     return new Promise((resolve, reject) => {
       deleteQueryBatch(database, query, resolve).catch(reject);
     });
@@ -150,10 +173,15 @@ async function addDataToFirebase(collectionName, key, value, forceUpdate = false
     }
     const docRef = database.collection(collectionName).doc(key);
     await docRef.set(value);
-    collectionData[collectionName][key] = value
     fs.appendFileSync(logFileURL,
       `Report: Data added to collection ${collectionName}/${key}:` + JSON.stringify(value) + '\n'
     );
+    console.log(`Firebase recored ${key} in ${collectionName}`)
+    if (!(collectionName in collectionData)) {
+      collectionData[collectionName] = {}
+    }
+    collectionData[collectionName][key] = value
+    // return value
   } catch (error) {
     console.error(
       `Error ${error.name} while adding data to collection ${collectionName} cause ${error.cause}`
@@ -164,10 +192,15 @@ async function addDataToFirebase(collectionName, key, value, forceUpdate = false
   }
 }
 
-async function resetDatabase() {
-  await deleteCollection(`blogs`)
-  for (let suffix in collectionSuffixes)
-    await deleteCollection(`notification-${suffix}`)
+async function resetDatabase(req, res) {
+  try {
+    await deleteCollection(`blogs`)
+    for (let suffix of collectionSuffixes)
+      await deleteCollection(`notification-${suffix}`)
+    res.json({ message: 'Database expunged successfully' });
+  } catch (error) {
+      res.status(500).json({ error: error.message });
+  }
 }
 
-module.exports = { fetchAllList, fetchBlogList, fetchSingleBlog, resetDatabase};
+module.exports = { fetchAllList, fetchSingleBlog, resetDatabase};

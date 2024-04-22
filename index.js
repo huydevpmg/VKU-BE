@@ -1,13 +1,18 @@
 const express = require("express");
 const cors = require("cors");
-const crawler = require("./controllers/crawler");
 const PORT = 4000;
 const app = express();
 app.use(express.json());
 app.use(cors());
 
+// const crawler = require("./controllers/crawler");
 // await crawler.resetDatabase()
-crawler.fetchAllList()
+// crawler.fetchAllList()
+
+const announcementRoutes = require('./routes/announcements')
+app.use('/announcement', announcementRoutes)
+
+
 
 /*
 // SIMPLE ROUTING PASSING
