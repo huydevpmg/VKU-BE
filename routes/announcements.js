@@ -2,11 +2,14 @@ const express = require('express')
 const router = express.Router()
 
 const crawler = require("../controllers/crawler");
-// await crawler.resetDatabase()
 
 router.get('/reset', crawler.resetDatabase)
-router.get('/list', crawler.fetchAllList)
-router.get('/:id', crawler.fetchSingleBlog)
+router.get('/list', crawler.fetchAll)
+router.get('/blog/:id', crawler.fetchBlog)
+router.get('/cache', (req,res) => {
+  crawler.updateLocalCache()
+  res.end()
+})
 
 
 // define the home page route
