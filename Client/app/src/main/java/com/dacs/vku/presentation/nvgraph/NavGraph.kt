@@ -17,6 +17,7 @@ fun NavGraph(
     startDestination: String,
 ) {
     val navController = rememberNavController()
+//    rememberNavController => de managestate
 
     NavHost(navController = navController, startDestination = startDestination) {
         navigation(
@@ -29,7 +30,6 @@ fun NavGraph(
                 val viewModel: OnBoardingViewModel = hiltViewModel()
                 OnBoardingScreen(
                     event = viewModel::onEvent
-
                 )
             }
         }

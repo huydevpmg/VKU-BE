@@ -30,7 +30,6 @@ class MainActivity : ComponentActivity() {
         }
         setContent {
             VKU {
-
                 val isSystemInDarkMode = isSystemInDarkTheme()
                 val systemController = rememberSystemUiController()
 

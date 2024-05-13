@@ -46,6 +46,7 @@ fun NewsNavigator() {
     var selectedItem by rememberSaveable {
         mutableStateOf(0)
     }
+
     selectedItem = when (backStackState?.destination?.route) {
         Route.DaotaoScreen.route -> 0
         Route.CTSVScreen.route -> 1

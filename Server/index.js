@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const axios = require("axios");
 const cheerio = require("cheerio");
+const { db } = require("./firebase"); // Assuming you have set up Firebase and exported db from firebase.js
 
 const app = express();
 app.use(cors());
@@ -36,6 +37,10 @@ app.get("/crawlAndSaveData", async (req, res) => {
         });
       });
 
+      // Lưu dữ liệu vào Firestore trong một document của subcollection
+      const docRef = db.collection("Notification").doc(documentName);
+      await docRef.set({ items });
+
       return items;
     };
 
@@ -53,6 +58,7 @@ app.get("/crawlAndSaveData", async (req, res) => {
       .send({ status: "Failed", msg: "Failed to crawl and save data" });
   }
 });
+
 
 
 app.get("/crawlAndSaveDataDaoTao", async (req, res) => {
@@ -77,7 +83,9 @@ app.get("/crawlAndSaveDataDaoTao", async (req, res) => {
         spanText: spanText,
       });
     });
-
+    // Lưu dữ liệu vào Firestore trong một document của subcollection
+    const docRef = db.collection("Notification").doc("Daotao"); // Document reference within subcollection
+    await docRef.set({ items }); // Set all items as a single field in the document
     
     return res.status(200).json(items); // Removed send() because json() sends the response automatically
   } catch (error) {
@@ -112,7 +120,9 @@ app.get("/crawlAndSaveCTSV", async (req, res) => {
     });
 
     
-
+    // Lưu dữ liệu vào Firestore trong một document của subcollection
+    const docRef = db.collection("Notification").doc("CTSV"); // Document reference within subcollection
+    await docRef.set({ items }); // Set all items as a single field in the document
     return res.status(200).json(items); // Removed send() because json() sends the response automatically
   } catch (error) {
     console.error("Error crawling and saving data:", error);
@@ -145,7 +155,9 @@ app.get("/crawlAndSaveKHTC", async (req, res) => {
       });
     });
 
-    
+    // Lưu dữ liệu vào Firestore trong một document của subcollection
+    const docRef = db.collection("Notification").doc("KHTC"); // Document reference within subcollection
+    await docRef.set({ items }); // Set all items as a single field in the document
     return res.status(200).json(items); // Removed send() because json() sends the response automatically
   } catch (error) {
     console.error("Error crawling and saving data:", error);
@@ -178,7 +190,9 @@ app.get("/crawlAndSaveKTDBCL", async (req, res) => {
       });
     });
 
-   
+   // Lưu dữ liệu vào Firestore trong một document của subcollection
+   const docRef = db.collection("Notification").doc("KTDBCL"); // Document reference within subcollection
+   await docRef.set({ items }); // Set all items as a single field in the document
 
     return res.status(200).json(items); // Removed send() because json() sends the response automatically
   } catch (error) {

@@ -20,7 +20,6 @@ class MainViewModel @Inject constructor(
 
     private val _splashCondition = mutableStateOf(true)
     var splashCondition: State<Boolean> = _splashCondition
-
     private set
 
     var startDestination by mutableStateOf(Route.AppStartNavigation.route)

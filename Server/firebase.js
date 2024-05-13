@@ -3,9 +3,10 @@ const serviceAccount = require("./serviceAccountKey.json"); // Path to the downl
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
-    databaseURL: "https://vkuuu-deeab-default-rtdb.firebaseio.com"
-});
+    databaseURL: "https://vku-app-cecd3-default-rtdb.firebaseio.com"
+  });
 
+  
 const db = admin.firestore();
 
 module.exports = { admin, db };
