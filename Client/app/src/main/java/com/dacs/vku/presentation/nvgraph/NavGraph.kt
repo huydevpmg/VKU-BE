@@ -8,16 +8,21 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
+import com.dacs.vku.presentation.MainViewModel.MainViewModel
+import com.dacs.vku.presentation.SignInWithGoogle.GoogleAuthClient
+import com.dacs.vku.presentation.SignInWithGoogle.NavGoogle
 import com.dacs.vku.presentation.onboarding.OnBoardingScreen
 import com.dacs.vku.presentation.onboarding.OnBoardingViewModel
 import com.loc.newsapp.presentation.news_navigator.NewsNavigator
 
 @Composable
 fun NavGraph(
+    mainViewModel: MainViewModel,
     startDestination: String,
+    googleAuthClient: GoogleAuthClient,
+
 ) {
     val navController = rememberNavController()
-//    rememberNavController => de managestate
 
     NavHost(navController = navController, startDestination = startDestination) {
         navigation(
@@ -41,8 +46,10 @@ fun NavGraph(
             composable(
                 route = Route.DaotaoScreen.route
             ) {
-                NewsNavigator()
+                NewsNavigator(mainViewModel, googleAuthClient )
             }
         }
+
+
     }
 }

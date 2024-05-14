@@ -3,7 +3,7 @@ package com.dacs.vku.di
 import android.app.Application
 import com.dacs.vku.data.manager.LocalUserManagerImplementation
 import com.dacs.vku.data.manager.NotificationRepositoryImpl
-import com.dacs.vku.data.remote.NotiApi
+import com.dacs.vku.data.remote.fetchData.NotiApi
 import com.dacs.vku.domain.manager.LocalUserManager
 import com.dacs.vku.domain.repository.DaoTaoRepository
 import com.dacs.vku.domain.usecases.app_entry.AppEntryUseCases
@@ -14,7 +14,9 @@ import com.dacs.vku.domain.usecases.notification.GetNotiDaoTao
 import com.dacs.vku.domain.usecases.notification.GetNotiKHTC
 import com.dacs.vku.domain.usecases.notification.GetNotiKTDBCL
 import com.dacs.vku.domain.usecases.notification.NotiUseCases
+import com.dacs.vku.presentation.SignInWithGoogle.GoogleAuthClient
 import com.dacs.vku.util.Constants.BASE_URL
+import com.google.android.gms.auth.api.identity.Identity
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -64,6 +66,17 @@ object AppModule {
             getNotiCTSV = GetNotiCTSV(notificationRepository),
             getNotiKHTC = GetNotiKHTC(notificationRepository),
             getNotiKTDBCL =  GetNotiKTDBCL(notificationRepository)
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideGoogleAuthClient(
+        application: Application,
+    ): GoogleAuthClient {
+        return GoogleAuthClient(
+            context = application,
+            oneTapClient = Identity.getSignInClient(application)
         )
     }
 

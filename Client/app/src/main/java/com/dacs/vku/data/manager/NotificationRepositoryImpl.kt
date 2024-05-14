@@ -3,11 +3,11 @@ package com.dacs.vku.data.manager
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import com.dacs.vku.data.remote.NotiApi
-import com.dacs.vku.data.remote.a_ctsv.NotificationCTSVPagingSource
-import com.dacs.vku.data.remote.a_daotao.NotificationDaoTaoPagingSource
-import com.dacs.vku.data.remote.a_khtc.NotificationKHTCPagingSource
-import com.dacs.vku.data.remote.a_ktdbcl.NotificationKTDBCLPagingSource
+import com.dacs.vku.data.remote.fetchData.NotiApi
+import com.dacs.vku.data.remote.fetchData.a_ctsv.NotificationCTSVPagingSource
+import com.dacs.vku.data.remote.fetchData.a_daotao.NotificationDaoTaoPagingSource
+import com.dacs.vku.data.remote.fetchData.a_khtc.NotificationKHTCPagingSource
+import com.dacs.vku.data.remote.fetchData.a_ktdbcl.NotificationKTDBCLPagingSource
 import com.dacs.vku.domain.model.NotiItem
 import com.dacs.vku.domain.repository.DaoTaoRepository
 import kotlinx.coroutines.flow.Flow

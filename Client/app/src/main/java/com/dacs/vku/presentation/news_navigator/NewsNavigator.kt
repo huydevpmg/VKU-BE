@@ -20,6 +20,9 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.dacs.vku.R
+import com.dacs.vku.presentation.MainViewModel.MainViewModel
+import com.dacs.vku.presentation.SignInWithGoogle.GoogleAuthClient
+import com.dacs.vku.presentation.SignInWithGoogle.NavGoogle
 import com.dacs.vku.presentation.notificationCTSV.CTSVViewModel
 import com.dacs.vku.presentation.notificationDaoTao.NotiScreen
 import com.dacs.vku.presentation.notificationDaoTao.NotificationViewModel
@@ -29,16 +32,21 @@ import com.loc.newsapp.presentation.news_navigator.components.NewsBottomNavigati
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NewsNavigator() {
+fun NewsNavigator(
+    mainViewModel: MainViewModel,
+    GoogleAuthClient : GoogleAuthClient
+) {
 
     val bottomNavigationItems = remember {
         listOf(
             BottomNavigationItem(icon = R.drawable.ic_home, text = "Dao Tao"),
             BottomNavigationItem(icon = R.drawable.ic_search, text = "CTSV"),
             BottomNavigationItem(icon = R.drawable.ic_bookmark, text = "KHTC"),
-            BottomNavigationItem(icon = R.drawable.ic_network, text = "DBKTCL")
+            BottomNavigationItem(icon = R.drawable.ic_network, text = "DBKTCL"),
+            BottomNavigationItem(icon = R.drawable.finallogo, text = "Login")
 
-            )
+
+        )
     }
 
     val navController = rememberNavController()
@@ -52,6 +60,7 @@ fun NewsNavigator() {
         Route.CTSVScreen.route -> 1
         Route.KHTCScreen.route -> 2
         Route.KTDBCLScreen.route -> 3
+        Route.VKULoginViaGmail.route -> 4
         else -> 0
     }
 
@@ -81,6 +90,11 @@ fun NewsNavigator() {
                         navController = navController,
                         route = Route.KTDBCLScreen.route
                     )
+
+                    4 -> navigateToTab(
+                        navController = navController,
+                        route = Route.VKULoginViaGmail.route
+                    )
                 }
             }
         )
@@ -97,7 +111,7 @@ fun NewsNavigator() {
                 NotiScreen(
                     notis = articles,
                     navigate = { navigateToTab(navController = navController, route = it) },
-                    )
+                )
             }
             composable(route = Route.CTSVScreen.route) {
                 val viewModel: CTSVViewModel = hiltViewModel()
@@ -128,6 +142,14 @@ fun NewsNavigator() {
                 )
 
             }
+
+            composable(route = Route.VKULoginViaGmail.route) {
+                NavGoogle(GoogleAuthClient = GoogleAuthClient, lifecycleScope = mainViewModel.lifecycleScope )
+            }
+
+
+
+
 
         }
     }
