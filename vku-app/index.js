@@ -9,44 +9,44 @@ const { OAuth2Client } = require('google-auth-library');
 // const googleClientId = '580572019975-o5vve2ugtdatl86r296lrj8gjm79t90p.apps.googleusercontent.com';
 // const googleClient = new OAuth2Client(googleClientId);
 
-app.get('/google-login', async (req, res) => {
-  try {
-    const { tokenId } = "eyJhbGciOiJSUzI1NiIsImtpZCI6ImEzYjc2MmY4NzFjZGIzYmFlMDA0NGM2NDk2MjJmYzEzOTZlZGEzZTMiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI1ODA1NzIwMTk5NzUtanE2Z2NoMnR1ZTBscjBhbDVsdGJiMTNwaDNpbWJ0OGUuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI1ODA1NzIwMTk5NzUtbzV2dmUydWd0ZGF0bDg2cjI5Nmxyajhnam03OXQ5MHAuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMDAwMzUwMTk2NjczMDM0ODM5MzEiLCJlbWFpbCI6InBoYW5taW5oZ2lhaHV5MTBAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsIm5hbWUiOiJIdXkgUGhhbiIsInBpY3R1cmUiOiJodHRwczovL2xoMy5nb29nbGV1c2VyY29udGVudC5jb20vYS9BQ2c4b2NMZVVJR3hBZDlhamVRdnQyNHUxVGUzSm1TcGFVa0d6NmVRN2lUMDJsTnBKMUZYbVgwTj1zOTYtYyIsImdpdmVuX25hbWUiOiJIdXkiLCJmYW1pbHlfbmFtZSI6IlBoYW4iLCJpYXQiOjE3MTU2MjA0MzQsImV4cCI6MTcxNTYyNDAzNH0.Axustgoc6293r4LXA4NJXGlz-eEPhfWFfetwYKnMZbBo1yAUDjjj25Tdu4Wtv8ICZyYpHuYsfjtGPLA6trVi3Tbm0Litnvuv4NvrXo6xWrPaGeeu_Ioy2tgwqufGZ4zY2Sly5I-PJ9ZQASaZi1JvO_m_uqBont_7I4wc-GQyiUuL3KL7pdO-gcaEYa3Ioy9W8gxFEA_SkNt7dU1a_WIEKiPs15NMb-6wB7h-BnW_ZGEjti02rlklxmMEOh1T0J1lEDn-Di34zIAWBNoOkpYmfmpTkmwyhhRWJpOt7IwusUDB3NlPMYUxbv60m1NFMMa7NFb0YGQZ7onLHHdR2Ux_rg";
+// app.get('/google-login', async (req, res) => {
+//   try {
+//     const { tokenId } = "eyJhbGciOiJSUzI1NiIsImtpZCI6ImEzYjc2MmY4NzFjZGIzYmFlMDA0NGM2NDk2MjJmYzEzOTZlZGEzZTMiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI1ODA1NzIwMTk5NzUtanE2Z2NoMnR1ZTBscjBhbDVsdGJiMTNwaDNpbWJ0OGUuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJhdWQiOiI1ODA1NzIwMTk5NzUtbzV2dmUydWd0ZGF0bDg2cjI5Nmxyajhnam03OXQ5MHAuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJzdWIiOiIxMDAwMzUwMTk2NjczMDM0ODM5MzEiLCJlbWFpbCI6InBoYW5taW5oZ2lhaHV5MTBAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsIm5hbWUiOiJIdXkgUGhhbiIsInBpY3R1cmUiOiJodHRwczovL2xoMy5nb29nbGV1c2VyY29udGVudC5jb20vYS9BQ2c4b2NMZVVJR3hBZDlhamVRdnQyNHUxVGUzSm1TcGFVa0d6NmVRN2lUMDJsTnBKMUZYbVgwTj1zOTYtYyIsImdpdmVuX25hbWUiOiJIdXkiLCJmYW1pbHlfbmFtZSI6IlBoYW4iLCJpYXQiOjE3MTU2MjA0MzQsImV4cCI6MTcxNTYyNDAzNH0.Axustgoc6293r4LXA4NJXGlz-eEPhfWFfetwYKnMZbBo1yAUDjjj25Tdu4Wtv8ICZyYpHuYsfjtGPLA6trVi3Tbm0Litnvuv4NvrXo6xWrPaGeeu_Ioy2tgwqufGZ4zY2Sly5I-PJ9ZQASaZi1JvO_m_uqBont_7I4wc-GQyiUuL3KL7pdO-gcaEYa3Ioy9W8gxFEA_SkNt7dU1a_WIEKiPs15NMb-6wB7h-BnW_ZGEjti02rlklxmMEOh1T0J1lEDn-Di34zIAWBNoOkpYmfmpTkmwyhhRWJpOt7IwusUDB3NlPMYUxbv60m1NFMMa7NFb0YGQZ7onLHHdR2Ux_rg";
 
 
-      // Xác thực token ID từ Google
-      const ticket = await googleClient.verifyIdToken({
-          idToken: tokenId,
-          audience: googleClientId
-      });
-      const payload = ticket.getPayload();
+//       // Xác thực token ID từ Google
+//       const ticket = await googleClient.verifyIdToken({
+//           idToken: tokenId,
+//           audience: googleClientId
+//       });
+//       const payload = ticket.getPayload();
 
-      // Lấy thông tin người dùng từ payload
-      const email = payload.email;
-      const fullName = payload.name;
-      const profileImage = payload.picture;
-      const uid = payload.uid;
+//       // Lấy thông tin người dùng từ payload
+//       const email = payload.email;
+//       const fullName = payload.name;
+//       const profileImage = payload.picture;
+//       const uid = payload.uid;
 
-      // Kiểm tra xem người dùng đã tồn tại trong Firebase Authentication chưa
-      let userRecord = await firebaseAdmin.auth().getUserByEmail(email);
+//       // Kiểm tra xem người dùng đã tồn tại trong Firebase Authentication chưa
+//       let userRecord = await firebaseAdmin.auth().getUserByEmail(email);
       
-      // Nếu người dùng chưa tồn tại, tạo mới
-      if (!userRecord) {
-          // Tạo người dùng mới trên Firebase Authentication
-          userRecord = await firebaseAdmin.auth().createUser({
-              email: email,
-              displayName: fullName,
-              photoURL: profileImage
-          });
-      }
+//       // Nếu người dùng chưa tồn tại, tạo mới
+//       if (!userRecord) {
+//           // Tạo người dùng mới trên Firebase Authentication
+//           userRecord = await firebaseAdmin.auth().createUser({
+//               email: email,
+//               displayName: fullName,
+//               photoURL: profileImage
+//           });
+//       }
 
-      // Trả về phản hồi thành công với thông tin người dùng
-      res.status(200).json({ success: true, message: 'Login with Google successful', user: userRecord });
-  } catch (error) {
-      console.error('Error logging in with Google:', error);
-      res.status(500).json({ success: false, message: 'Login with Google failed', error: error.message });
-  }
-});
+//       // Trả về phản hồi thành công với thông tin người dùng
+//       res.status(200).json({ success: true, message: 'Login with Google successful', user: userRecord });
+//   } catch (error) {
+//       console.error('Error logging in with Google:', error);
+//       res.status(500).json({ success: false, message: 'Login with Google failed', error: error.message });
+//   }
+// });
 
 module.exports = router;
 
