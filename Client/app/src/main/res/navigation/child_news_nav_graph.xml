@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:startDestination="@id/DaoTaoFragmentChild">
+
+    <fragment
+        android:id="@+id/DaoTaoFragmentChild"
+        android:name="com.dacs.vku.ui.fragments.main.DaoTaoFragment"
+        android:label="Notification List"
+        tools:layout="@layout/fragment_dao_tao">
+        <action
+            android:id="@+id/action_DaoTaoFragmentChild_to_articleFragment"
+            app:destination="@id/articleFragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/CTSVFragmentChild"
+        android:name="com.dacs.vku.ui.fragments.main.CTSV"
+        android:label="Notification List"
+        tools:layout="@layout/fragment_ctsv">
+        <action
+            android:id="@+id/action_CTSVFragmentChild_to_articleFragment"
+            app:destination="@id/articleFragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/KHTCFragmentChild"
+        android:name="com.dacs.vku.ui.fragments.main.KHTC"
+        android:label="Notification List"
+        tools:layout="@layout/fragment_khtc">
+        <action
+            android:id="@+id/action_CTSVFragmentChild_to_articleFragment"
+            app:destination="@id/articleFragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/KTDBCLFragmentChild"
+        android:name="com.dacs.vku.ui.fragments.main.KTDBCL"
+        android:label="Notification List"
+        tools:layout="@layout/fragment_ktdbcl">
+        <action
+            android:id="@+id/action_CTSVFragmentChild_to_articleFragment"
+            app:destination="@id/articleFragment"/>
+    </fragment>
+</navigation>

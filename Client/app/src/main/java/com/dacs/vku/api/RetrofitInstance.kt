@@ -8,7 +8,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class RetrofitInstance {
     companion object {
-        private val retrofit by lazy{
+        private val retrofit by lazy {
             val logging = HttpLoggingInterceptor()
             logging.setLevel(HttpLoggingInterceptor.Level.BODY)
             val client = OkHttpClient.Builder()
@@ -22,7 +22,7 @@ class RetrofitInstance {
                 .build()
         }
 
-        val api by lazy{
+        val api by lazy {
             retrofit.create(NotificationAPI::class.java)
         }
     }
