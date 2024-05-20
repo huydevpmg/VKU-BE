@@ -26,8 +26,6 @@ class RetrofitInstance {
             retrofit.create(NotificationAPI::class.java)
         }
 
-        val authApi by lazy {
-            retrofit.create(AuthenticationAPI::class.java)
-        }
+
     }
 }
