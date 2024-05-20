@@ -22,7 +22,7 @@
         android:title="Saved"
         android:icon="@drawable/ic_bookmark" />
 
-    <item android:id="@+id/Authentication"
+    <item android:id="@+id/authenticationFragment"
         android:title="Auth"
         android:icon="@drawable/ic_network" />
 </menu>

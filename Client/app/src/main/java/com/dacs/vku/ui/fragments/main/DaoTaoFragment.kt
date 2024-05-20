@@ -32,6 +32,7 @@ class DaoTaoFragment : Fragment(R.layout.fragment_dao_tao) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         binding = FragmentDaoTaoBinding.bind(view)
 
         itemNotificationDaoTaoError = view.findViewById(R.id.itemNotificationError)

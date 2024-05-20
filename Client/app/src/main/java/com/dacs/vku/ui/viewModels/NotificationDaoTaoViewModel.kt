@@ -1,15 +1,19 @@
 package com.dacs.vku.ui.viewModels
 
+import AuthenticationRepository
 import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.dacs.vku.models.Notification
 import com.dacs.vku.repository.NotificationRepository
 import com.dacs.vku.util.Resources
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import kotlinx.coroutines.launch
 import retrofit2.Response
 import java.io.IOException
@@ -17,8 +21,25 @@ import kotlin.reflect.KMutableProperty0
 
 class NotificationDaoTaoViewModel(
     app: Application,
-    private val notificationRepository: NotificationRepository
+    private val notificationRepository: NotificationRepository,
+    private val authRepository: AuthenticationRepository
 ) : AndroidViewModel(app) {
+
+
+
+    private val _profileImageUriLiveData = MutableLiveData<Uri?>()
+    val profileImageUriLiveData: LiveData<Uri?> = _profileImageUriLiveData
+
+    // Đăng nhập bằng tài khoản Google
+    suspend fun signInWithGoogle(account: GoogleSignInAccount) {
+        authRepository.signInWithGoogle(account) { authResponse ->
+            // Xử lý AuthResponse nếu cần
+        }
+        // Lấy và cập nhật đường dẫn ảnh đại diện
+        val profileImageUri = authRepository.getProfileImageUri(account)
+        _profileImageUriLiveData.value = profileImageUri
+    }
+
 
     val notificationDaotao: MutableLiveData<Resources<MutableList<Notification>>> =
         MutableLiveData()
