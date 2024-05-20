@@ -18,8 +18,8 @@ app.use(passport.initialize());
 firebaseService.initialize
 
 // Routes
-app.use('/auth', authRoutes);
-app.use('/crawl', crawlRoutes);
+app.use('/', authRoutes);
+app.use('/', crawlRoutes);
 
 // Start server
 app.listen(PORT, () => {

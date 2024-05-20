@@ -24,7 +24,6 @@ class NotificationDaoTaoViewModel(
 ) : AndroidViewModel(app) {
 
 
-
     val notificationDaotao: MutableLiveData<Resources<MutableList<Notification>>> =
         MutableLiveData()
     var notificationDaoTaoPage = 1
@@ -56,7 +55,6 @@ class NotificationDaoTaoViewModel(
         getNotificationCTSV()
         getNotificationKTDBCL()
         getNotificationKHTC()
-
 
     }
 
