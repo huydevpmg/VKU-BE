@@ -1,6 +1,7 @@
 const { OAuth2Client } = require('google-auth-library');
 const { db } = require('../config/firebase');
-const googleClientId = '580572019975-o5vve2ugtdatl86r296lrj8gjm79t90p.apps.googleusercontent.com';
+require('dotenv').config();
+const googleClientId = process.env.GOOGLE_CLIENT_ID;
 const googleClient = new OAuth2Client(googleClientId);
 
 exports.verifyIdToken = async (req, res) => {
