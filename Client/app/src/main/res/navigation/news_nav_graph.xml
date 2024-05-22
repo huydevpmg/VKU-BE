@@ -2,11 +2,11 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/news_nav_graph"
-    app:startDestination="@id/savedFragment">
+    app:startDestination="@id/daotaoFragment">
 
     <fragment
         android:id="@+id/daotaoFragment"
-        android:name="com.dacs.vku.ui.fragments.main.DaoTaoFragment"
+        android:name="com.dacs.vku.ui.fragments.NotificationListFragment"
         android:label="DaoTao">
         <action
             android:id="@+id/action_daotaoFragment_to_articleFragment"
@@ -30,6 +30,11 @@
             android:id="@+id/action_searchFragment_to_articleFragment"
             app:destination="@id/articleFragment"/>
 
+    </fragment>
+    <fragment
+        android:id="@+id/authenticationFragment"
+        android:name="com.dacs.vku.ui.fragments.LoginRegister"
+        android:label="AuthenFragment">
     </fragment>
     <fragment
         android:id="@+id/articleFragment"

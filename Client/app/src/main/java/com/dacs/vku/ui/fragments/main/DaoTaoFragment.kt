@@ -3,8 +3,7 @@ package com.dacs.vku.ui.fragments.main
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
+import android.view.*
 import android.widget.AbsListView
 import android.widget.Button
 import android.widget.TextView
@@ -22,9 +21,7 @@ import com.dacs.vku.ui.VkuActivity
 import com.dacs.vku.ui.viewModels.NotificationDaoTaoViewModel
 import com.dacs.vku.util.Resources
 
-
 class DaoTaoFragment : Fragment(R.layout.fragment_dao_tao) {
-
 
     lateinit var notificationDaoTaoViewModel: NotificationDaoTaoViewModel
     lateinit var notificationAdapter: NotificationAdapter
@@ -35,14 +32,15 @@ class DaoTaoFragment : Fragment(R.layout.fragment_dao_tao) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         binding = FragmentDaoTaoBinding.bind(view)
 
         itemNotificationDaoTaoError = view.findViewById(R.id.itemNotificationError)
         val inflater = requireContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val view: View = inflater.inflate(R.layout.item_error,null)
+        val view: View = inflater.inflate(R.layout.item_error, null)
 
         retryButton = view.findViewById(R.id.retryButton)
-        errorText  = view.findViewById(R.id.errorText)
+        errorText = view.findViewById(R.id.errorText)
 
         notificationDaoTaoViewModel = (activity as VkuActivity).notificationViewModel
         setupNotificationDaoTaoRecycler()
@@ -54,18 +52,16 @@ class DaoTaoFragment : Fragment(R.layout.fragment_dao_tao) {
             try {
                 findNavController().navigate(R.id.action_daotaoFragment_to_articleFragment, bundle)
             } catch (e: IllegalArgumentException) {
-                // Handle the case where navigation fails due to missing action or destination
                 Log.e("NavigationError", "Navigation failed: ${e.message}")
             }
         }
 
-
         notificationDaoTaoViewModel.notificationDaotao.observe(viewLifecycleOwner, Observer { response ->
-            when(response) {
+            when (response) {
                 is Resources.Error<*> -> {
                     hideProgressBar()
-                    response.message?.let {
-                        message-> Toast.makeText(activity, "Sorry error: $message",Toast.LENGTH_LONG).show()
+                    response.message?.let { message ->
+                        Toast.makeText(activity, "Sorry error: $message", Toast.LENGTH_LONG).show()
                         showErrorMessage(message)
                     }
                 }
@@ -75,18 +71,12 @@ class DaoTaoFragment : Fragment(R.layout.fragment_dao_tao) {
                 is Resources.Success<*> -> {
                     hideErrorMessage()
                     hideProgressBar()
-                    response.data?.let{
-                            notificationResponse ->
+                    response.data?.let { notificationResponse ->
                         notificationAdapter.differ.submitList(notificationResponse)
-
                     }
                 }
             }
         })
-
-
-
-
     }
 
     var isError = false
@@ -100,7 +90,7 @@ class DaoTaoFragment : Fragment(R.layout.fragment_dao_tao) {
     }
 
     private fun showProgressBar() {
-        binding.paginationProgressBar.visibility = View.INVISIBLE
+        binding.paginationProgressBar.visibility = View.VISIBLE
         isLoading = true
     }
 
@@ -110,10 +100,9 @@ class DaoTaoFragment : Fragment(R.layout.fragment_dao_tao) {
     }
 
     private fun showErrorMessage(message: String) {
-        itemNotificationDaoTaoError.visibility = View.INVISIBLE
+        itemNotificationDaoTaoError.visibility = View.VISIBLE
         errorText.text = message
-        isError = false
-
+        isError = true
     }
 
     var scollListener = object : RecyclerView.OnScrollListener() {
@@ -121,14 +110,14 @@ class DaoTaoFragment : Fragment(R.layout.fragment_dao_tao) {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             super.onScrolled(recyclerView, dx, dy)
             val layoutManager = recyclerView.layoutManager as LinearLayoutManager
-            val firstVisableItemPosition = layoutManager.findFirstVisibleItemPosition()
-            val visableItemCount = layoutManager.childCount
+            val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
+            val visibleItemCount = layoutManager.childCount
             val totalItemCount = layoutManager.itemCount
 
             val isNoErrors = !isError
             val isNotLoadingAndNotLastPage = !isLoading && !isLastPage
-            val isAtLastItem = firstVisableItemPosition + visableItemCount >= totalItemCount
-            val isNotAtBeginning = firstVisableItemPosition >= 0
+            val isAtLastItem = firstVisibleItemPosition + visibleItemCount >= totalItemCount
+            val isNotAtBeginning = firstVisibleItemPosition >= 0
             val shouldPaginate =
                 isNoErrors && isNotLoadingAndNotLastPage && isAtLastItem && isNotAtBeginning && isScolling
             if (shouldPaginate) {
@@ -142,11 +131,10 @@ class DaoTaoFragment : Fragment(R.layout.fragment_dao_tao) {
             if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
                 isScolling = true
             }
-
         }
-
     }
-    private fun setupNotificationDaoTaoRecycler(){
+
+    private fun setupNotificationDaoTaoRecycler() {
         notificationAdapter = NotificationAdapter()
         binding.recyclerDaoTao.apply {
             adapter = notificationAdapter
@@ -154,5 +142,4 @@ class DaoTaoFragment : Fragment(R.layout.fragment_dao_tao) {
             addOnScrollListener(this@DaoTaoFragment.scollListener)
         }
     }
-
 }

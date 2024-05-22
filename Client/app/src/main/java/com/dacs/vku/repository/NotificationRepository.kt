@@ -7,6 +7,9 @@ import retrofit2.http.Query
 
 class NotificationRepository(val DB: NotificationDatabase) {
     suspend fun getNotificationDaoTao() = RetrofitInstance.api.getNotificationDaoTao()
+    suspend fun getNotificationCTSV() = RetrofitInstance.api.getNotificationCTSV()
+    suspend fun getNotificationKHTC() = RetrofitInstance.api.getNotificationKHTC()
+    suspend fun getNotificationKTDBCL() = RetrofitInstance.api.getNotificationKTDBCL()
 
    suspend fun searchNotification(searchQuery: String) = RetrofitInstance.api.searchForNotification(searchQuery)
 //
