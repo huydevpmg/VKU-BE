@@ -23,7 +23,11 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
+        <meta-data
+            android:name="com.google.android.gms.client_id"
+            android:value="580572019975-h4j2s53sv1grsntub9filro93pk8gcao.apps.googleusercontent.com" />
     </application>
 
 </manifest>

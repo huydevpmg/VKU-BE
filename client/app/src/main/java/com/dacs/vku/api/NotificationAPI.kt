@@ -7,6 +7,7 @@ import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Headers
 import retrofit2.http.POST
 import retrofit2.http.Query
 
@@ -29,8 +30,5 @@ interface NotificationAPI {
         searchQuery: String
     ): Response<MutableList<Notification>>
 
-    @POST("/verify-id-token")
-    fun verifyToken(@Body tokenRequest: TokenRequest): Call<ResponseBody>
-}
-
-data class TokenRequest(val token: String?)
+    @POST("verify-user")
+    fun verifyUser(@Body userData: UserData): Call<ResponseBody>}

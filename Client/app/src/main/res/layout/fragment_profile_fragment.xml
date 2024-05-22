@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#808080"
-    tools:context=".ui.fragments.LoginRegister"
+    tools:context=".ui.fragments.Authentication.Profile_fragment"
     android:id="@+id/profileFragment">
 
     <ScrollView
@@ -82,8 +82,8 @@
 
                     <ImageView
                         android:id="@+id/profileURL"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
                         android:layout_marginTop="16dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"

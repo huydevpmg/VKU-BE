@@ -35,6 +35,9 @@
         android:id="@+id/authenticationFragment"
         android:name="com.dacs.vku.ui.fragments.LoginRegister"
         android:label="AuthenFragment">
+        <action
+            android:id="@+id/action_AuthenticationFragment_to_ProfileFragment"
+            app:destination="@id/profileFragment"/>
     </fragment>
     <fragment
         android:id="@+id/articleFragment"
@@ -43,5 +46,18 @@
         <argument
             android:name="notification"
             app:argType="com.dacs.vku.models.Notification" />
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.dacs.vku.ui.fragments.Authentication.Profile_fragment"
+        android:label="ProfileFragment" >
+        <argument
+            android:name="profile"
+            app:argType="com.dacs.vku.api.UserData"
+            android:defaultValue="@null"
+            app:nullable="true"
+            />
     </fragment>
 </navigation>

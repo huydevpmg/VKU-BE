@@ -18,7 +18,7 @@ class VkuActivity : AppCompatActivity() {
     lateinit var binding: ActivityVkuBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Thread.sleep(3000)
+        Thread.sleep(1000)
         installSplashScreen()
 
         binding = ActivityVkuBinding.inflate(layoutInflater)
