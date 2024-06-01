@@ -13,6 +13,7 @@ import com.dacs.vku.models.Notification
 import com.dacs.vku.repository.NotificationRepository
 import com.dacs.vku.util.Resources
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import retrofit2.Response
 import java.io.IOException
@@ -169,12 +170,23 @@ class NotificationDaoTaoViewModel(
             }
         }
     }
+    private var searchJob: Job? = null // Track the current search job to cancel if a new search is triggered
 
     // Search Notifications
-    fun searchNotification(searchQuery: String) = viewModelScope.launch {
-        searchNotificationDaoTaoInternet(searchQuery)
-    }
+    fun searchNotification(searchQuery: String) {
+        if (searchQuery.isBlank()) {
+            // Ignore empty search queries
+            return
+        }
 
+        // Cancel the previous search job if it's still running
+        searchJob?.cancel()
+
+        // Start a new search job
+        searchJob = viewModelScope.launch {
+            searchNotificationDaoTaoInternet(searchQuery)
+        }
+    }
     suspend fun searchNotificationDaoTaoInternet(searchQuery: String) {
         newSearchQuery = searchQuery
         searchNotification.postValue(Resources.Loading())
@@ -192,26 +204,6 @@ class NotificationDaoTaoViewModel(
                 else -> searchNotification.postValue(Resources.Error("Unknown error"))
             }
         }
-    }
-
-    // Handle Notification Response
-    private fun handleNotificationResponse(
-        response: Response<MutableList<Notification>>,
-        page: KMutableProperty0<Int>,
-        responseList: KMutableProperty0<MutableList<Notification>?>
-    ): Resources<MutableList<Notification>> {
-        if (response.isSuccessful) {
-            response.body()?.let { resultResponse ->
-                page.set(page.get() + 1)
-                if (responseList.get() == null) {
-                    responseList.set(resultResponse)
-                } else {
-                    responseList.get()?.addAll(resultResponse)
-                }
-                return Resources.Success(responseList.get() ?: resultResponse)
-            }
-        }
-        return Resources.Error(response.message())
     }
 
     private fun handleSearchNotification(response: Response<MutableList<Notification>>): Resources<MutableList<Notification>> {
@@ -255,6 +247,24 @@ class NotificationDaoTaoViewModel(
                 else -> false
             }
         } ?: false
+    }
+    private fun handleNotificationResponse(
+        response: Response<MutableList<Notification>>,
+        page: KMutableProperty0<Int>,
+        responseList: KMutableProperty0<MutableList<Notification>?>
+    ): Resources<MutableList<Notification>> {
+        if (response.isSuccessful) {
+            response.body()?.let { resultResponse ->
+                page.set(page.get() + 1)
+                if (responseList.get() == null) {
+                    responseList.set(resultResponse)
+                } else {
+                    responseList.get()?.addAll(resultResponse)
+                }
+                return Resources.Success(responseList.get() ?: resultResponse)
+            }
+        }
+        return Resources.Error(response.message())
     }
 
 

@@ -88,6 +88,7 @@ class LoginRegister : Fragment() {
     private fun sendUserDataToServer(userData: UserData) {
         val apiService = RetrofitInstance.api
         val call = apiService.verifyUser(userData)
+        Log.e("VKUUUUU", userData.toString()  )
 
         call.enqueue(object : Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {

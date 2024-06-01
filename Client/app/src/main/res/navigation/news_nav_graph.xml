@@ -59,5 +59,23 @@
             android:defaultValue="@null"
             app:nullable="true"
             />
+        <action
+            android:id="@+id/action_ProfileFragment_to_ScheduleFragment"
+            app:destination="@id/scheduleFragment"/>
+
     </fragment>
+
+    <fragment
+        android:id="@+id/scheduleFragment"
+        android:name="com.dacs.vku.ui.fragments.Authentication.ScheduleFragment"
+        android:label="ScheduleFragment">
+        <argument
+            android:name="profile"
+            app:argType="com.dacs.vku.api.UserData"
+            android:defaultValue="@null"
+            app:nullable="true"
+            />
+    </fragment>
+
+
 </navigation>

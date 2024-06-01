@@ -43,7 +43,7 @@ class KTDBCL : Fragment(R.layout.fragment_ktdbcl) {
         errorText = view.findViewById(R.id.errorText)
 
         notificationDaoTaoViewModel = (activity as VkuActivity).notificationViewModel
-        setupNotificationKHTCRecycler()
+        setupNotificationKTDBCLRecycler()
 
         notificationAdapter.setOnItemClickListener { notification ->
             val bundle = Bundle().apply {
@@ -56,7 +56,7 @@ class KTDBCL : Fragment(R.layout.fragment_ktdbcl) {
             }
         }
 
-        notificationDaoTaoViewModel.notificationKHTC.observe(viewLifecycleOwner, Observer { response ->
+        notificationDaoTaoViewModel.notificationKTDBCL.observe(viewLifecycleOwner, Observer { response ->
             when (response) {
                 is Resources.Error<*> -> {
                     hideProgressBar()
@@ -134,7 +134,7 @@ class KTDBCL : Fragment(R.layout.fragment_ktdbcl) {
         }
     }
 
-    private fun setupNotificationKHTCRecycler() {
+    private fun setupNotificationKTDBCLRecycler() {
         notificationAdapter = NotificationAdapter()
         binding.recycleKTDBCL.apply {
             adapter = notificationAdapter
