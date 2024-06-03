@@ -1,5 +1,6 @@
 package com.dacs.vku.api
 
+import com.dacs.vku.models.Alarm
 import com.dacs.vku.models.Notification
 import com.dacs.vku.models.NotificationResponse
 import com.dacs.vku.models.Schedule
@@ -44,5 +45,8 @@ interface NotificationAPI {
     fun updateSchedule(@Body schedule: Schedule): Call<ResponseBody>
     @GET("get-all-schedules/{userId}")
     fun getAllSchedules(@Path("userId") userId: String): Call<List<Schedule>>
+    @GET("add-alarm")
+    fun addAlarm(@Body alarm: Alarm): Call<ResponseBody>
+
 }
 
