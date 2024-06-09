@@ -1,7 +1,9 @@
 package com.dacs.vku.api
 
+import com.dacs.vku.models.Alarm
 import com.dacs.vku.models.Notification
 import com.dacs.vku.models.NotificationResponse
+import com.dacs.vku.models.Schedule
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Response
@@ -9,6 +11,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.POST
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface NotificationAPI {
@@ -31,4 +34,19 @@ interface NotificationAPI {
     ): Response<MutableList<Notification>>
 
     @POST("verify-user")
-    fun verifyUser(@Body userData: UserData): Call<ResponseBody>}
+    fun verifyUser(@Body userData: UserData): Call<ResponseBody>
+
+    @POST("add-schedule")
+    fun addCalendar(@Body schedule: Schedule): Call<ResponseBody>
+
+    @POST("delete-schedule")
+    fun deleteSchedule(@Body schedule: Map<String, String>): Call<ResponseBody>
+    @POST("update-schedule")
+    fun updateSchedule(@Body schedule: Schedule): Call<ResponseBody>
+    @GET("get-all-schedules/{userId}")
+    fun getAllSchedules(@Path("userId") userId: String): Call<List<Schedule>>
+    @GET("add-alarm")
+    fun addAlarm(@Body alarm: Alarm): Call<ResponseBody>
+
+}
+

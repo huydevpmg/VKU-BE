@@ -16,4 +16,13 @@
     <string name="ctsv">CTSV</string>
     <string name="daotao">ádasdasdasd</string>
     <string name="web_client_id">580572019975-kmcjhb34jo9b789f47qpo05c7d1ap3t3.apps.googleusercontent.com</string>
+    <string-array name="days_of_week">
+        <item>Thứ 2</item>
+        <item>Thứ 3</item>
+        <item>Thứ 4</item>
+        <item>Thứ 5</item>
+        <item>Thứ 6</item>
+        <item>Thứ 7</item>
+        <item>Chủ Nhật</item>
+    </string-array>
 </resources>

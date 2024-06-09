@@ -1,6 +1,6 @@
 package com.dacs.vku.ui.fragments
 
-import android.R.attr
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -16,12 +16,6 @@ import com.dacs.vku.api.GoogleAuthUiClient
 import com.dacs.vku.api.RetrofitInstance
 import com.dacs.vku.api.UserData
 import com.dacs.vku.databinding.FragmentLoginRegisterBinding
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.tasks.Task
 import kotlinx.coroutines.launch
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -51,8 +45,22 @@ class LoginRegister : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.btnSignIn.setOnClickListener {
-            signIn()
+        val sharedPreferences = requireContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+        val username = sharedPreferences.getString("user_name", null)
+        val email = sharedPreferences.getString("user_email", null)
+        val userId = sharedPreferences.getString("user_id", null)
+        val profilePictureUrl = sharedPreferences.getString("profile_picture_url", null)
+
+        if (email != null && username != null && profilePictureUrl != null) {
+            val userData =  UserData(username, email, userId, profilePictureUrl)
+            val bundle = Bundle().apply {
+                putSerializable("userData", userData)
+            }
+            findNavController().navigate(R.id.action_AuthenticationFragment_to_ProfileFragment, bundle)
+        } else {
+            binding.btnSignIn.setOnClickListener {
+                signIn()
+            }
         }
     }
 
@@ -84,15 +92,26 @@ class LoginRegister : Fragment() {
             }
         }
     }
-
+    private fun saveUserData(userData: UserData) {
+        val sharedPreferences = requireContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+        with(sharedPreferences.edit()) {
+            putString("user_email", userData.email)
+            putString("user_name", userData.username)
+            putString("user_id", userData.userId)
+            putString("profile_picture_url", userData.profilePictureUrl)
+            apply()
+        }
+    }
     private fun sendUserDataToServer(userData: UserData) {
         val apiService = RetrofitInstance.api
         val call = apiService.verifyUser(userData)
+        Log.e("VKUUUUU", userData.toString()  )
 
         call.enqueue(object : Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if (response.isSuccessful) {
                     Log.e("VKUUUUU", "User data sent successfully $userData")
+                    saveUserData(userData)
                     val bundle = Bundle().apply {
                         putSerializable("userData", userData)
                     }

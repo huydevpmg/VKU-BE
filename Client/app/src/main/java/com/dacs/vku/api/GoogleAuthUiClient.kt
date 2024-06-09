@@ -40,7 +40,7 @@ class GoogleAuthUiClient(
             SignInResult(
                 user = user?.let {
                     UserData(
-                        name = it.displayName,
+                        username = it.displayName,
                         email = it.email,
                         userId = it.uid,
                         profilePictureUrl = it.photoUrl?.toString()
@@ -69,7 +69,7 @@ class GoogleAuthUiClient(
     fun getSignedInUser(): UserData? {
         return auth.currentUser?.let {
             UserData(
-                name = it.displayName,
+                username = it.displayName,
                 email = it.email,
                 userId = it.uid,
                 profilePictureUrl = it.photoUrl?.toString()
